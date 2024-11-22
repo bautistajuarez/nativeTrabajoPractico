@@ -40,25 +40,7 @@ class UsuariosSearch extends Component {
         console.error("Error al obtener usuarios:", error);
       });
   }
-  handleSubmit = () => {
-    const { mensaje } = this.state;
-    const user = auth.currentUser;
-  
-    if (mensaje.trim() !== '') {
-      db.collection('posts').add({
-        mensaje: mensaje,
-        owner: user.email,
-        likes: [],
-        createdAt: new Date(),
-      })
-      .then(() => {
-        this.setState({ mensaje: '' });
-      })
-      .catch((error) => {
-        console.error("Error al crear el post: ");
-      });
-    }
-  };
+
 
   render() {
     const { filteredUsers } = this.state;
@@ -87,6 +69,7 @@ class UsuariosSearch extends Component {
               <View style={styles.userContainer}>
                 <Image source={{ uri: item.profilePicture }} style={styles.userImage} />
                 <Text style={styles.userName}>{item.userName}</Text>
+                
               </View>
             )}
           />
@@ -104,18 +87,18 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 50,
-    borderColor: '#007BFF',
+    borderColor: '#28A745',
     borderWidth: 2,
     marginBottom: 15,
     paddingLeft: 15,
-    borderRadius: 25,
+    borderRadius: 10,
     backgroundColor: '#fff',
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#28A745',
     paddingVertical: 12,
-    borderRadius: 25,
+    borderRadius: 10,
     alignItems: 'center',
     marginBottom: 15,
   },
@@ -157,5 +140,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+
 
 export default UsuariosSearch;
