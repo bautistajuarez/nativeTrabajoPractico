@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
+import { Text, View, TextInput , TouchableOpacity, StyleSheet } from "react-native"
 
 export default class Home extends Component {
   render() {
     return (
-      <div>Home</div>
+      
+        <View>
+          <Text>
+            HOLAA
+          </Text>
+        </View>
+
+
     )
   }
 }

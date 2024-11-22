@@ -19,7 +19,7 @@ export default class Login extends Component {
         auth.signInWithEmailAndPassword(email, password)
           .then(response => {
             this.setState({ loggedIn: true });
-            this.props.navigation.navigate("Home");
+            this.props.navigation.navigate("HomeMenu");
           })
           .catch(error => {
             console.log(error.message);
@@ -30,7 +30,7 @@ export default class Login extends Component {
       componentDidMount() {
         auth.onAuthStateChanged((user) => {
           if (user) {
-            this.props.navigation.navigate("Home");
+            this.props.navigation.navigate("HomeMenu");
           }
         });
       }
@@ -39,7 +39,7 @@ export default class Login extends Component {
     render() {
         return (
             <View style={styles.container}>
-            <Text style={styles.login}> Login </Text>
+            <Text style={styles.login}> LOGIN </Text>
     
             <TextInput
               style={styles.input}
@@ -60,8 +60,10 @@ export default class Login extends Component {
     
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={() => this.login(this.state.email, this.state.password)}
-            >
+              onPress={() => {
+                this.login(this.state.email, this.state.password);
+                this.props.navigation.navigate("HomeMenu");
+            }}            >
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
     
