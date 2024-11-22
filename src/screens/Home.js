@@ -5,6 +5,13 @@ import { auth, db } from "../firebase/config";
 
 class Home extends Component {
     
+  componentDidMount() {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        this.props.navigation.navigate("Login");
+      }
+    });
+  }
     render() {
         const user = auth.currentUser;
         return (

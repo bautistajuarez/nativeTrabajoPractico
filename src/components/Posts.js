@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, ActivityIndicator, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { db, auth } from "../firebase/config";
 import firebase from 'firebase';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Posts extends Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class Posts extends Component {
 
   componentDidMount() {
     db.collection('posts')
-      .orderBy('createdAt', 'desc') 
+      .orderBy('createdAt', 'desc')
       .onSnapshot(docs => {
         let arrayPosts = [];
         docs.forEach(doc => {
@@ -63,11 +64,11 @@ class Posts extends Component {
                   style={styles.likeButton}
                   onPress={() => this.handleLike(item.id, item.data.likes)}
                 >
-                  <Text style={styles.likeText}>
-                    {item.data.likes.includes(auth.currentUser.email)
-                      ? 'Unlike'
-                      : 'Like'}
-                  </Text>
+                  <Icon
+                    name={item.data.likes.includes(auth.currentUser.email) ? 'heart' : 'heart-o'} 
+                    size={24} 
+                    color='#28a745'  
+                  />
                 </TouchableOpacity>
                 <Text style={styles.likeCount}>
                   {item.data.likes.length} {item.data.likes.length === 1 ? 'like' : 'likes'}
@@ -82,61 +83,51 @@ class Posts extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-    },
-    postContainer: {
-      backgroundColor: '#ffffff', 
-      borderRadius: 10,
-      padding: 15,
-      marginBottom: 15,
-      borderWidth: 1, 
-      borderColor: '#dddddd', 
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 3,
-      elevation: 3,
-    },
-    username: {
-      fontSize: 16,
-      fontWeight: 'bold',
-      marginBottom: 10,
-      color: '#28a745', 
-    },
-    message: {
-      fontSize: 18,
-      fontFamily: 'serif',
-      padding: 10,
-      backgroundColor: '#fefae0', 
-      borderRadius: 8,
-      borderWidth: 1,
-      borderColor: '#d4c9a0', 
-      marginBottom: 10,
-      color: '#333333',
-    },
-    likeButton: {
-      paddingVertical: 8,
-      paddingHorizontal: 12,
-      backgroundColor: '#28a745', 
-      borderRadius: 5,
-      alignItems: 'center',
-      marginBottom: 5,
-    },
-    likeText: {
-      color: '#ffffff',
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    likeCount: {
-      fontSize: 14,
-      color: '#564a38', 
-      marginTop: 5,
-      textAlign: 'right',
-    },
-  });
-  
-  
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#e9f7ef',
+  },
+  postContainer: {
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#dddddd',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  username: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#28a745',
+  },
+  message: {
+    fontSize: 18,
+    fontFamily: 'serif',
+    padding: 10,
+    backgroundColor: '#fefae0',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#d4c9a0',
+    marginBottom: 10,
+    color: '#333333',
+  },
+  likeButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 5,
+  },
+  likeCount: {
+    fontSize: 14,
+    color: '#564a38',
+    marginTop: 5,
+    textAlign: 'right',
+  },
+});
 
 export default Posts;
