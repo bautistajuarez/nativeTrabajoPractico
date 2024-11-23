@@ -36,7 +36,7 @@ componentDidMount() {
 
     fetchPosts = () => {
       db.collection("posts")
-      .where('owner', '==', auth.currentUser.email)
+      .where('email', '==', auth.currentUser.email)
       .orderBy('createdAt', 'desc')
       .onSnapshot(querySnapshot => {
           let posts = querySnapshot.docs.map(doc => ({
