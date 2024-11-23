@@ -87,7 +87,7 @@ export default class Login extends Component {
         backgroundColor: '#f5f5f5',
         padding: 20,
       },
-      login: {fontSize: 30,fontWeight: 'bold', color: 'blue',  marginBottom: 20,},
+      login: {fontSize: 35,fontWeight: 'bold', color: 'blue',  marginBottom: 20,},
     
       input: {
         width: '90%',

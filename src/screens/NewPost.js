@@ -21,6 +21,7 @@ export default class NewPost extends Component {
     })
       .then(() => {
         this.setState({ posteo: "" });
+        this.props.navigation.navigate('Profile');
       })
       .catch((error) => {
         console.error("Error al crear el posteo: ", error);
