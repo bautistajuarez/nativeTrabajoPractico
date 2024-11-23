@@ -10,7 +10,7 @@ class Profile extends Component {
     super(props);
     this.state = {
         email: auth.currentUser ? auth.currentUser.email : "",
-        user: "User",
+        user: 'User',
         posts: [],
     };
 }
@@ -49,17 +49,31 @@ componentDidMount() {
       });
   }
 
+
+  handleSignOut = () => {
+    auth.signOut()
+        .then(() => {
+            this.props.navigation.navigate('Login');
+        })
+        .catch((error) => {
+            console.error("No se pudo cerrar sesion", error);
+        });
+};
+ 
+
+
   render() {
     const { navigation } = this.props;
     return (
     <>
-        
+       
         <View style={styles.header}>
                 <Text style={styles.profile}>Mi Perfil</Text>
-                <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Login')}>
+                <TouchableOpacity style={styles.logoutButton} onPress={() => this.handleSignOut()}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
             </View>
+
 
         <View style={styles.infoUsuario}>
         <Text style={styles.mail}> Usuario: {this.state.user} </Text>
@@ -81,63 +95,63 @@ componentDidMount() {
     );
   }
 }
-
 const styles = StyleSheet.create({
-  header: { 
-    flexDirection: 'row', 
-    justifyContent: 'flex-end', 
-    alignItems: 'center', 
-    padding: 10, 
-    backgroundColor: '#f8f9fa' 
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#f8f9fa'
   },
-  profile: { 
-    fontSize: 40, 
-    fontWeight: 'bold', 
-    textAlign: 'center', 
-    color: '#333', 
+  profile: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
     flex: 1,
   },
-  logoutButton: { 
-    backgroundColor: '#6200ea', 
-    paddingVertical: 10, 
-    paddingHorizontal: 15, 
-    borderRadius: 10, 
+  logoutButton: {
+    backgroundColor: '#6200ea',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 10,
     position: 'absolute'
   },
   logoutText: {
-    color: 'white', 
-    fontSize: 16, 
+    color: 'white',
+    fontSize: 16,
     fontWeight: 'bold'
   },
   mail: {
-    fontSize: 25, 
-    color: '#555', 
+    fontSize: 25,
+    color: '#555',
     marginBottom: 10 ,
     fontWeight: 'bold'
   },
   cantidadPosteos: {
-    fontSize: 18, 
-    color: '#555', 
-    marginTop: 5 
+    fontSize: 18,
+    color: '#555',
+    marginTop: 5
   },
   infoUsuario: {
-    alignSelf: 'center', 
-    backgroundColor: '#f0f0f0', 
-    padding: 15, 
-    borderRadius: 10, 
-    marginVertical: 20, 
-    width: '90%', 
+    alignSelf: 'center',
+    backgroundColor: '#f0f0f0',
+    padding: 15,
+    borderRadius: 10,
+    marginVertical: 20,
+    width: '90%',
     alignItems: 'center'
   },
   ceroPosteos: {
-    flex: 1, 
-    justifyContent: 'center', 
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center'
   },
   textoCeroPosteos: {
-    fontSize: 16, 
+    fontSize: 16,
     color: 'gray'
   }
 });
+
 
 export default Profile;
