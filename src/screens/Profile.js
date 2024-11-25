@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { FlatList } from 'react-native';
 import { auth, db } from '../firebase/config';
+import firebase from 'firebase';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 class Profile extends Component {
 
@@ -15,52 +17,52 @@ class Profile extends Component {
   }
 
   componentDidMount() {
-   
-      auth.onAuthStateChanged(user => {
-          if (!user) {
-              this.props.navigation.navigate("Login");
-          } else {
-              db.collection("users")
-               .where("email", "==", auth.currentUser.email)
-               .onSnapshot(snapshot => {
-                   if (!snapshot.empty) {
-                        const doc = snapshot.docs[0];
-                        this.setState({ user: doc.data().userName });
-                      }
-                  });
 
-  
-          }
-      });
-
-
-      db.collection('posts')
-        .where('email', '==', auth.currentUser.email)
-        .orderBy('createdAt', 'desc')
-        .onSnapshot((snapshot) => {
-          let posts = [];
-          snapshot.forEach((doc) => {
-            posts.push({
-              id: doc.id,
-              data: doc.data(),
-            });
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        this.props.navigation.navigate("Login");
+      } else {
+        db.collection("users")
+          .where("email", "==", auth.currentUser.email)
+          .onSnapshot(snapshot => {
+            if (!snapshot.empty) {
+              const doc = snapshot.docs[0];
+              this.setState({ user: doc.data().userName });
+            }
           });
-          this.setState({
-            posts: posts
+
+
+      }
+    });
+
+
+    db.collection('posts')
+      .where('email', '==', auth.currentUser.email)
+      .orderBy('createdAt', 'desc')
+      .onSnapshot((snapshot) => {
+        let posts = [];
+        snapshot.forEach((doc) => {
+          posts.push({
+            id: doc.id,
+            data: doc.data(),
           });
         });
-    
+        this.setState({
+          posts: posts
+        });
+      });
+
   }
 
   handleDelete = (id) => {
     db.collection('posts')
-        .doc(id).delete()
-        .then(() => {
-        })
-        .catch((error) => {
-            console.error('Ha ocurrido un error', error);
-        });
-};
+      .doc(id).delete()
+      .then(() => {
+      })
+      .catch((error) => {
+        console.error('Ha ocurrido un error', error);
+      });
+  };
 
 
   handleSignOut = () => {
@@ -114,21 +116,36 @@ class Profile extends Component {
           </View>
         ) : (
           <FlatList
-      data={this.state.posts}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-      <View style={styles.postContainer}>
-        <Text style={styles.username}>{item.data.email}</Text>
-        <Text style={styles.message}>{item.data.posteo}</Text>
-          <TouchableOpacity
-          style={styles.deleteButton}
-          onPress={() => this.handleDelete(item.id)}
-        >
-        <Text style={styles.deleteButtonText}>Eliminar</Text>
-          </TouchableOpacity>
-      </View>
-  )}
-/>
+            data={this.state.posts}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.postContainer}>
+                <Text style={styles.username}>{item.data.email}</Text>
+                <Text style={styles.message}>{item.data.posteo}</Text>
+
+                <TouchableOpacity
+                  style={styles.likeButton}
+                  onPress={() => this.handleLike(item.id, item.data.likes)}
+                >
+                  <Icon
+                    name={item.data.likes.includes(auth.currentUser.email) ? 'heart' : 'heart-o'}
+                    size={24}
+                    color='#28a745'
+                  />
+                </TouchableOpacity>
+                <Text style={styles.likeCount}>
+                  {item.data.likes.length} {item.data.likes.length === 1 ? 'like' : 'likes'}
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => this.handleDelete(item.id)}
+                >
+                  <Text style={styles.deleteButtonText}>Eliminar</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         )}
       </>
     );
@@ -227,11 +244,11 @@ const styles = StyleSheet.create({
     color: '#333333',
   },
   deleteButton: {
-    backgroundColor: '#dc3545', 
+    backgroundColor: '#dc3545',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 5,
-    alignSelf: 'flex-end', 
+    alignSelf: 'flex-end',
     marginTop: 10,
   },
   deleteButtonText: {
