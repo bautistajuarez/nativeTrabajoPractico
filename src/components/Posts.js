@@ -85,8 +85,10 @@ class Posts extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 15,
     backgroundColor: '#e9f7ef',
+    width: '100%', 
   },
   postContainer: {
     backgroundColor: '#ffffff',
@@ -108,9 +110,9 @@ const styles = StyleSheet.create({
     color: '#28a745',
   },
   message: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'serif',
-    padding: 10,
+    padding: 12,
     backgroundColor: '#fefae0',
     borderRadius: 8,
     borderWidth: 1,
@@ -129,5 +131,10 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 });
+
+
+
+
+
 
 export default Posts;
