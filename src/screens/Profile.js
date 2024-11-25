@@ -16,38 +16,29 @@ class Profile extends Component {
 }
 
 componentDidMount() {
-    auth.onAuthStateChanged(user => {
-        if (!user) {
-            this.props.navigation.navigate("Login");
-        } else {
-            db.collection("users")
-             .where("email", "==", auth.currentUser.email)
-             .onSnapshot(snapshot => {
-                 if (!snapshot.empty) {
-                      const doc = snapshot.docs[0];
-                      this.setState({ user: doc.data().userName });
-                    }
-                });
+  if (auth.currentUser) {
 
-   this.fetchPosts();
 
-        }
-    });}
 
-    fetchPosts = () => {
-      db.collection("posts")
-      .where('email', '==', auth.currentUser.email)
-      .orderBy('createdAt', 'desc')
-      .onSnapshot(querySnapshot => {
-          let posts = querySnapshot.docs.map(doc => ({
-              id: doc.id,
-              data: doc.data()
-          }));
-          this.setState({ posts: posts });
-      }, error => {
-          console.error("Ha ocurrido un error");
-      });
-  }
+          db.collection('posts')
+          .where('email', '==', auth.currentUser.email) 
+          .orderBy('createdAt', 'desc') 
+          .onSnapshot((snapshot) => {
+            let posts = [];
+            snapshot.forEach((doc) => {
+              posts.push({
+                id: doc.id,
+                data: doc.data(),
+              });
+            });
+            this.setState({
+              posts: posts
+            });
+          });
+      } else {
+        this.props.navigation.navigate('Login');
+      }
+    }
 
 
   handleSignOut = () => {
@@ -63,7 +54,7 @@ componentDidMount() {
 
 
   render() {
-    const { navigation } = this.props;
+    const { user, email, posts } = this.state;
     return (
     <>
        
@@ -76,17 +67,17 @@ componentDidMount() {
 
 
         <View style={styles.infoUsuario}>
-        <Text style={styles.mail}> Usuario: {this.state.user} </Text>
-        <Text style={styles.mail}> Email: {this.state.email} </Text>
-        <Text style={styles.cantidadPosteos}>Cantidad de posteos: {this.state.posts.length}</Text>
+        <Text style={styles.mail}> Usuario: {user} </Text>
+        <Text style={styles.mail}> Email: {email} </Text>
+        <Text style={styles.cantidadPosteos}>Cantidad de posteos: {posts.length}</Text>
         </View>
-                {this.state.posts.length === 0 ? (
+                {posts.length === 0 ? (
                     <View style={styles.ceroPosteos}>
                         <Text style={styles.textoCeroPosteos}>No hay ningún post subido</Text>
                     </View>
                 ) : (
                     <FlatList
-                        data={this.state.posts}
+                        data={posts}
                         keyExtractor={(item) => item.id}
                         renderItem={({ item }) => <Posts posts={[item]} condicion={true} />}
                     />
