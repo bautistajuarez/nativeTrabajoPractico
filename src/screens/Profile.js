@@ -10,12 +10,30 @@ class Profile extends Component {
     this.state = {
       email: auth.currentUser ? auth.currentUser.email : "",
       user: 'User',
-      posts: [],
+      posts: []
     };
   }
 
   componentDidMount() {
    
+      auth.onAuthStateChanged(user => {
+          if (!user) {
+              this.props.navigation.navigate("Login");
+          } else {
+              db.collection("users")
+               .where("email", "==", auth.currentUser.email)
+               .onSnapshot(snapshot => {
+                   if (!snapshot.empty) {
+                        const doc = snapshot.docs[0];
+                        this.setState({ user: doc.data().userName });
+                      }
+                  });
+
+  
+          }
+      });
+
+
       db.collection('posts')
         .where('email', '==', auth.currentUser.email)
         .orderBy('createdAt', 'desc')
@@ -55,7 +73,22 @@ class Profile extends Component {
       });
   };
 
-
+  handleLike = (postId, likes) => {
+    const user = auth.currentUser.email;
+    if (likes.includes(user)) {
+      db.collection('posts')
+        .doc(postId)
+        .update({
+          likes: firebase.firestore.FieldValue.arrayRemove(user),
+        });
+    } else {
+      db.collection('posts')
+        .doc(postId)
+        .update({
+          likes: firebase.firestore.FieldValue.arrayUnion(user),
+        });
+    }
+  };
 
   render() {
     const { user, email, posts } = this.state;
@@ -205,6 +238,17 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+
+  likeButton: {
+    alignSelf: 'flex-start',
+    marginBottom: 5,
+  },
+  likeCount: {
+    fontSize: 14,
+    color: '#564a38',
+    marginTop: 5,
+    textAlign: 'right',
   },
 });
 
