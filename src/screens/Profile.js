@@ -115,28 +115,34 @@ class Profile extends Component {
           </View>
         ) : (
           <FlatList
-            data={posts}
-            keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.postContainer}>
-                <Text style={styles.username}>{item.data.email}</Text>
-                <Text style={styles.message}>{item.data.posteo}</Text>
-                <TouchableOpacity
-                  style={styles.likeButton}
-                  onPress={() => this.handleLike(item.id, item.data.likes)}
-                >
-                  <Icon
-                    name={item.data.likes.includes(auth.currentUser.email) ? 'heart' : 'heart-o'} 
-                    size={24} 
-                    color='#28a745'  
-                  />
-                </TouchableOpacity>
-                <Text style={styles.likeCount}>
-                  {item.data.likes.length} {item.data.likes.length === 1 ? 'like' : 'likes'}
-                </Text>
-              </View>
-            )}
-          />
+          data={posts}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.postContainer}>
+              <Text style={styles.username}>{item.data.email}</Text>
+              <Text style={styles.message}>{item.data.posteo}</Text>
+              <TouchableOpacity
+                style={styles.likeButton}
+                onPress={() => this.handleLike(item.id, item.data.likes)}
+              >
+                <Icon
+                  name={item.data.likes.includes(auth.currentUser.email) ? 'heart' : 'heart-o'}
+                  size={24}
+                  color='#28a745'
+                />
+              </TouchableOpacity>
+              <Text style={styles.likeCount}>
+                {item.data.likes.length} {item.data.likes.length === 1 ? 'like' : 'likes'}
+              </Text>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => this.handleDelete(item.id)}
+              >
+                <Text style={styles.deleteButtonText}>Eliminar</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        />
         )}
       </>
     );
